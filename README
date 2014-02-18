@@ -1,0 +1,1 @@
+This is an Openframeworks program to save a sequence of images from the depth sensor of a kinect. It uses ofxKinect as addon.
