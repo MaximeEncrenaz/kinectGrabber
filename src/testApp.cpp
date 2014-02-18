@@ -43,9 +43,9 @@ void testApp::setup() {
     // Init
     m_bIsRecording = false;
     
-    // Default init
-    g_bRecordSignal = false;
-    g_bDisplay = true;
+    int counter = 0;
+    
+
 	
 }
 
@@ -95,19 +95,17 @@ void testApp::draw() {
 	ofSetColor(255, 255, 255);
 	
 
-    // draw from the live kinect
+    // draw from the live kinect depth
     
-    kinect.drawDepth(10, 10, 400, 300);
-    //kinect.draw(420, 10, 400, 300);
+    kinect.drawDepth(10, 10, 580, 500);
 		
-    grayImage.draw(10, 320, 400, 300);
+    grayImage.draw(600, 10, 580, 500);
 	
 	// draw instructions
 	ofSetColor(255, 255, 255);
 	stringstream reportStream;
     
 	reportStream << "press r to start recording" << endl
-	<< "using opencv threshold = " << bThreshWithOpenCV <<" (press spacebar)" << endl
 	<< "set near threshold " << nearThreshold << " (press: + -)" << endl
 	<< "set far threshold " << farThreshold << " (press: < >) " 	<< ", fps: " << ofGetFrameRate() << endl
 	<< "press c to close the connection and o to open it again, connection is: " << kinect.isConnected() << endl;
@@ -116,10 +114,21 @@ void testApp::draw() {
     	reportStream << "press UP and DOWN to change the tilt angle: " << angle << " degrees" << endl;
     }
     
-	ofDrawBitmapString(reportStream.str(), 20, 652);
+	ofDrawBitmapString(reportStream.str(), 20, 530);
     
-    if (m_bIsRecording )
-        record();
+    
+    // Display a blinking red dot when recording
+    if(m_bIsRecording and counter < 30){
+        ofPushStyle();
+        ofSetColor(255,0,0);
+        ofCircle(1100,50, 10);
+        ofPopStyle();
+        counter++;
+    }
+    else if (counter<60 and counter>29)
+        counter++;
+    else
+        counter =0;
 }
 
 
@@ -128,13 +137,6 @@ void testApp::exit() {
 	kinect.setCameraTiltAngle(0); // zero the tilt on exit
 	kinect.close();
 	
-}
-
-int testApp::record() {
-    
-    setFileNameStringNow(m_sSequenceFileName);
-    cout << "[app] Recording sequence to " << m_sSequenceFileName << endl;
-    return 0;
 }
 
 //--------------------------------------------------------------
@@ -200,30 +202,6 @@ void testApp::keyPressed (int key) {
 			kinect.setCameraTiltAngle(angle);
 			break;
 	}
-}
-
-//--------------------------------------------------------------
-int testApp::setFileNameStringNow(string& a_sFilename) {
-    
-    int time_c = clock();
-    
-	time_t timer;
-	time(&timer);
-	struct tm * timeinfo;
-	timeinfo = localtime ( &timer );
-    
-    std::ostringstream stringStream;
-    stringStream
-    << timeinfo->tm_year + 1900 << "-"
-    << timeinfo->tm_mon+1 << "-"
-    << timeinfo->tm_mday << "T"
-    << timeinfo->tm_hour << "_"
-    << timeinfo->tm_min << "_"
-    << timeinfo->tm_sec << ".oni";
-    
-    a_sFilename = stringStream.str();
-    
-    return 0;
 }
 
 //--------------------------------------------------------------

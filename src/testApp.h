@@ -48,18 +48,9 @@ public:
 	ofEasyCam easyCam;
     
     // Members
-    std::string m_sSequenceFileName;
     
     int m_iFrame;
-    
-    bool g_bRecordSignal;
-    bool g_bDisplay;
-    
+    int counter;
     bool m_bIsRecording;
-    
-    // Methods
-    unsigned int fetchCamID();
-    int setFileNameStringNow(std::string& a_sFilename);
-    int record();
-    int stopRecording();
+
 };
